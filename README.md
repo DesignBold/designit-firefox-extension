@@ -1,1 +1,0 @@
-# designit-firefox-extension
