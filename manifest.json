@@ -1,34 +1,36 @@
 {
-  "name": "__MSG_extName1__",
-  "version": "0.4.3",
+  "name": "__MSG_extName__",
+  "version": "0.4.2",
   "manifest_version": 2,
-  "description": "__MSG_extDesc1__",
+  "description": "__MSG_extDesc__",
   "icons": {"16": "16.png", "128": "128.png"},
   "background": {"scripts": ["background.js"]},
   "content_scripts": [ {
-    "matches": ["<all_urls>"],
-   "js": ["init_button.js"],
-   "all_frames": false
- }],
+    "matches": ["https://*/*","http://*/*"],
+    "js": ["init_button.js"],
+    "all_frames": false
+  }],
   "default_locale": "en",
   "browser_action": {
-   "default_title": "DesignBold",
-    "default_popup": "chrome_extension.html"
- },
- "options_page": "options.html",
- "options_ui": {
-   "page": "options.html",
-   "open_in_tab" : true
- },
- "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdnjs.cloudflare.com; object-src 'self'",
- "web_accessible_resources": [
-   "chrome_extension.html"
- ],
- "permissions": [
-   "contextMenus",
-   "https://*/*",
-   "http://*/*",
-   "tabs",
-   "activeTab",
-   "storage"
- ]}
+    "default_icon": "128.png",
+    "default_title": "DesignBold"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab" : true,
+    "browser_style": true
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdnjs.cloudflare.com; object-src 'self'",
+  "web_accessible_resources": [
+    "chrome_extension.html"
+  ],
+  "permissions": [
+    "contextMenus",
+    "menus",
+    "https://*/*",
+    "http://*/*",
+    "tabs",
+    "activeTab",
+    "storage"
+  ]
+}

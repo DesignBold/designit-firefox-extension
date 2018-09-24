@@ -51,6 +51,19 @@ function validate_option(){
     }
 
 }
+
+function updateStatus(){
+    // Update status to let user know options were saved.
+    var status_container = document.getElementById("status_container");
+    var status = document.getElementById('status');
+    status.textContent = 'Options saved.';
+    status_container.style.display = "block";
+    setTimeout(function() {
+        status.textContent = '';
+        status_container.style.display = "none";
+        window.location.reload();
+    }, 750);
+}
 // Saves options to chrome.storage
 function save_options() {
     validate_option();
@@ -64,7 +77,7 @@ function save_options() {
     var black_list_temp = document.querySelector("#black_list").value;
     var white_list_temp = document.querySelector("#white_list").value;
     var website_limit = $("#website_limit > option:selected").val();
-    chrome.storage.sync.set({
+    browser.storage.local.set({
         defaultDocumentType: doc_type,
         hoverButtonStatus : hover_button_status,
         hoverButtonPosition : hover_button_position,
@@ -75,18 +88,8 @@ function save_options() {
         websiteLimit : website_limit,
         blackList : black_list_temp,
         whiteList : white_list_temp,
-    }, function() {
-        // Update status to let user know options were saved.
-        var status_container = document.getElementById("status_container");
-        var status = document.getElementById('status');
-        status.textContent = 'Options saved.';
-        status_container.style.display = "block";
-        setTimeout(function() {
-            status.textContent = '';
-            status_container.style.display = "none";
-            window.location.reload();
-        }, 750);
     });
+    updateStatus();
 }
 
 function init_hover_button_status(items){
@@ -131,9 +134,9 @@ function init_website_limit(items){
 }
 
 // Restores select box and checkbox state using the preferences
-// stored in chrome.storage.
+// stored in firefox.storage.
 function restore_options() {
-    chrome.storage.sync.get({
+    let option = browser.storage.local.get({
         defaultDocumentType: "blog-graphic",
         hoverButtonStatus : 1,
         hoverButtonPosition : 1,
@@ -144,7 +147,9 @@ function restore_options() {
         websiteLimit : 0,
         blackList : "",
         whiteList : "",
-    }, function(items) {
+    });
+
+    function onGot(items) {
         var template = _.template($("#document_type_select_tpl").html());
         var select_document_type_html = template({doc_types:DB.response.doc_types,selected:items.defaultDocumentType});
         document.getElementById('document_type').innerHTML = select_document_type_html;
@@ -157,7 +162,14 @@ function restore_options() {
         $("#hover_button_position  option[value='"+items.hoverButtonPosition+"']").attr("selected","selected");
         init_hover_button_status(items);
         init_website_limit(items);
-    });
+    }
+
+    function onError(error) {
+        console.log(`Error: ${error}`);
+    }
+
+    option.then(onGot, onError);
+
     $('[data-toggle="tooltip"]').tooltip();
 }
 document.addEventListener('DOMContentLoaded', restore_options);
