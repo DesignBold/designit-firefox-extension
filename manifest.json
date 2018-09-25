@@ -5,8 +5,7 @@
   "description": "__MSG_extDesc__",
   "icons": {"16": "16.png", "128": "128.png"},
   "background": {
-    "scripts": ["background.js"],
-    "matches": ["https://*/*","http://*/*"]
+    "scripts": ["background.js"]
   },
   "content_scripts": [ {
     "matches": ["https://*/*","http://*/*"],
