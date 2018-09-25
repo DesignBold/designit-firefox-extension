@@ -99,6 +99,7 @@ DBSDK_EXTENSION.openNewTab = function(url){
 // When mouse hover image.
 DBSDK_EXTENSION.init_hover_action = function(){
     function onGot(items) {
+        console.log("image hover");
         var images = document.querySelectorAll("img");
         if (images.length > 0){
             for (var i=0;i < images.length;i++){
@@ -132,6 +133,7 @@ DBSDK_EXTENSION.init_hover_action = function(){
 
 // When mouse over image.
 DBSDK_EXTENSION.mouseover_function = function(event){
+    console.log("image mouse over");
     var el = event.target;
     var rect = el.getBoundingClientRect();
     var image_src = el.src;
@@ -174,19 +176,21 @@ DBSDK_EXTENSION.mouseover_function = function(event){
 
 // When mouse leave image.
 DBSDK_EXTENSION.mouseleave_function = function(event){
+    console.log("image mouse leave");
     var el = event.target;
     var rect = el.getBoundingClientRect();
     var image_src = el.src;
     var button = document.querySelector("#design_bold_hover_button");
     var scroll_top = document.documentElement.scrollTop;
     if ( (event.clientX >= rect.left + rect.width) || (event.clientX <= rect.left) || event.clientY <= rect.top || event.clientY >= (rect.top + rect.height) ){
-        getPort().postMessage({action:'remove'});
+
         button.style.display = "none";
         button.dataset.image = "";
         button.onclick = function(){
             return false;
         };
     }
+    getPort().postMessage({action:'remove'});
 };
 
 DBSDK_EXTENSION.start_design_tool = function(event){
