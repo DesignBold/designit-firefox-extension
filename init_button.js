@@ -97,49 +97,33 @@ DBSDK_EXTENSION.openNewTab = function(url){
 
 
 // When mouse hover image.
-DBSDK_EXTENSION.init_hover_action = function(){
-    function onGot(items) {
-        console.log("image hover");
-        var images = document.querySelectorAll("img");
-        if (images.length > 0){
-            for (var i=0;i < images.length;i++){
-                items.minWidth = parseInt(items.minWidth);
-                items.maxWidth = parseInt(items.maxWidth);
-                items.minHeight = parseInt(items.minHeight);
-                items.maxHeight = parseInt(items.maxHeight);
-                items.hoverButtonStatus = parseInt(items.hoverButtonStatus);
-                images[i].db_config = items;
-                images[i].addEventListener("mouseover",DBSDK_EXTENSION.mouseover_function,false);
-                images[i].addEventListener("mouseleave",DBSDK_EXTENSION.mouseleave_function,false);
-            }
+DBSDK_EXTENSION.init_hover_action = function(items){
+    console.log('init_hover_action');
+    var images = document.querySelectorAll("img");
+    if (images.length > 0){
+        for (var i=0;i < images.length;i++){
+            items.minWidth = parseInt(items.minWidth);
+            items.maxWidth = parseInt(items.maxWidth);
+            items.minHeight = parseInt(items.minHeight);
+            items.maxHeight = parseInt(items.maxHeight);
+            items.hoverButtonStatus = parseInt(items.hoverButtonStatus);
+            images[i].db_config = items;
+            images[i].addEventListener("mouseover",DBSDK_EXTENSION.mouseover_function,false);
+            images[i].addEventListener("mouseleave",DBSDK_EXTENSION.mouseleave_function,false);
         }
     }
-
-    function onError(error) {
-        console.log(`Error: ${error}`);
-    }
-
-    let gettingItem = browser.storage.local.get({
-        defaultDocumentType: "blog-graphic",
-        hoverButtonStatus : 1,
-        hoverButtonPosition : 1,
-        minWidth : DB_EXTENSION.default_min_width,
-        maxWidth : DB_EXTENSION.default_max_width,
-        minHeight : DB_EXTENSION.default_min_height,
-        maxHeight : DB_EXTENSION.default_max_height,
-    });
-    gettingItem.then(onGot, onError);
 };
 
 // When mouse over image.
 DBSDK_EXTENSION.mouseover_function = function(event){
-    console.log("image mouse over");
+    console.log('mouseover_function');
     var el = event.target;
     var rect = el.getBoundingClientRect();
     var image_src = el.src;
     var button = document.querySelector("#design_bold_hover_button");
     var scroll_top = document.documentElement.scrollTop;
     var db_config = el.db_config;
+    console.log(db_config);
     if (rect.width >= db_config.minWidth && rect.width <= db_config.maxWidth && rect.height >= db_config.minHeight && rect.height <= db_config.maxHeight){
         if (db_config.hoverButtonStatus){
             switch (db_config.hoverButtonPosition){
@@ -176,7 +160,6 @@ DBSDK_EXTENSION.mouseover_function = function(event){
 
 // When mouse leave image.
 DBSDK_EXTENSION.mouseleave_function = function(event){
-    console.log("image mouse leave");
     var el = event.target;
     var rect = el.getBoundingClientRect();
     var image_src = el.src;
@@ -217,6 +200,7 @@ DBSDK_EXTENSION.start_design_tool = function(event){
 };
 
 function onGot(items) {
+    console.log(items);
     var domain = DBSDK_EXTENSION.domain;
     var domain_allow = 0;
     items.websiteLimit = parseInt(items.websiteLimit);
@@ -272,7 +256,7 @@ function onGot(items) {
     if (DBSDK_EXTENSION.allow){
         window.onload = function(){
             DBSDK_EXTENSION.init_designbold_layer();
-            DBSDK_EXTENSION.init_hover_action();
+            DBSDK_EXTENSION.init_hover_action(items);
         }
     }
 }
@@ -280,14 +264,6 @@ function onGot(items) {
 function onError(error) {
     console.log(`Error: ${error}`);
 }
-
-let getStorage = browser.storage.local.get({
-    hoverButtonStatus: 0,
-    websiteLimit : 0,
-    blackList : "",
-    whiteList : "",
-});
-getStorage.then(onGot, onError);
 
 var getPort = function() {
     if (DBSDK_EXTENSION._port) return DBSDK_EXTENSION._port;
@@ -297,3 +273,18 @@ var getPort = function() {
     });
     return DBSDK_EXTENSION._port;
 };
+
+
+let getStorage = browser.storage.local.get({
+    hoverButtonStatus: 1,
+    websiteLimit : 0,
+    blackList : "",
+    whiteList : "",
+    defaultDocumentType: "blog-graphic",
+    hoverButtonPosition : 1,
+    minWidth : DB_EXTENSION.default_min_width,
+    maxWidth : DB_EXTENSION.default_max_width,
+    minHeight : DB_EXTENSION.default_min_height,
+    maxHeight : DB_EXTENSION.default_max_height,
+});
+getStorage.then(onGot, onError);
