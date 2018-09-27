@@ -63,7 +63,7 @@ iframe.style.left = 0;
 iframe.style.border = 0;
 iframe.width = '100%';
 iframe.height = '100%';
-iframe.src = browser.runtime.getURL("chrome_extension.html");
+iframe.src = browser.runtime.getURL("extension.html");
 iframe.name = "designbold-extension-iframe";
 iframe.id = "designbold-extension-iframe";
 document.body.appendChild(iframe);
@@ -98,7 +98,6 @@ DBSDK_EXTENSION.openNewTab = function(url){
 
 // When mouse hover image.
 DBSDK_EXTENSION.init_hover_action = function(items){
-    console.log('init_hover_action');
     var images = document.querySelectorAll("img");
     if (images.length > 0){
         for (var i=0;i < images.length;i++){
@@ -116,14 +115,12 @@ DBSDK_EXTENSION.init_hover_action = function(items){
 
 // When mouse over image.
 DBSDK_EXTENSION.mouseover_function = function(event){
-    console.log('mouseover_function');
     var el = event.target;
     var rect = el.getBoundingClientRect();
     var image_src = el.src;
     var button = document.querySelector("#design_bold_hover_button");
     var scroll_top = document.documentElement.scrollTop;
     var db_config = el.db_config;
-    console.log(db_config);
     if (rect.width >= db_config.minWidth && rect.width <= db_config.maxWidth && rect.height >= db_config.minHeight && rect.height <= db_config.maxHeight){
         if (db_config.hoverButtonStatus){
             switch (db_config.hoverButtonPosition){
@@ -200,7 +197,6 @@ DBSDK_EXTENSION.start_design_tool = function(event){
 };
 
 function onGot(items) {
-    console.log(items);
     var domain = DBSDK_EXTENSION.domain;
     var domain_allow = 0;
     items.websiteLimit = parseInt(items.websiteLimit);
