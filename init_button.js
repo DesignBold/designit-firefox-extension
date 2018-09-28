@@ -114,8 +114,7 @@ DBSDK_EXTENSION.mouseover_function = function(event){
     var image_src = el.src;
     var button = document.querySelector("#design_bold_hover_button");
     var scroll_top = document.documentElement.scrollTop;
-    var db_config = customeConfig;
-
+    var db_config = DBSDK_EXTENSION.customeConfig;
     if (rect.width >= db_config.minWidth && rect.width <= db_config.maxWidth && rect.height >= db_config.minHeight && rect.height <= db_config.maxHeight){
         if (db_config.hoverButtonStatus){
             switch (db_config.hoverButtonPosition){
@@ -191,14 +190,14 @@ DBSDK_EXTENSION.start_design_tool = function(event){
     DfDocumentType.then(onGot, onError);
 };
 
-function windowOnload(){
+DBSDK_EXTENSION.windowOnload = function(){
 	DBSDK_EXTENSION.init_designbold_layer();
 	DBSDK_EXTENSION.init_hover_action();
 }
 
-var customeConfig = {};
+DBSDK_EXTENSION.customeConfig = {};
 
-function onGot(items) {
+DBSDK_EXTENSION.onGot_getStorage = function (items) {
     var domain = DBSDK_EXTENSION.domain;
     var domain_allow = 0;
     items.websiteLimit = parseInt(items.websiteLimit);
@@ -252,25 +251,15 @@ function onGot(items) {
         }
     }
     if (DBSDK_EXTENSION.allow){
-    	window.addEventListener("load", windowOnload());
+    	window.addEventListener("load", DBSDK_EXTENSION.windowOnload);
     }
 
-    customeConfig = items;
+    DBSDK_EXTENSION.customeConfig = items;
 }
 
-function onError(error) {
+DBSDK_EXTENSION.onError_getStorage = function (error) {
     console.log(`Error: ${error}`);
 }
-
-var getPort = function() {
-    if (DBSDK_EXTENSION._port) return DBSDK_EXTENSION._port;
-    DBSDK_EXTENSION._port = browser.runtime.connect({name: "contextMenus"});
-    DBSDK_EXTENSION._port.onDisconnect.addListener(function() {
-        DBSDK_EXTENSION._port = null;
-    });
-    return DBSDK_EXTENSION._port;
-};
-
 
 let getStorage = browser.storage.local.get({
     hoverButtonStatus: 1,
@@ -284,4 +273,13 @@ let getStorage = browser.storage.local.get({
     minHeight : DB_EXTENSION.default_min_height,
     maxHeight : DB_EXTENSION.default_max_height,
 });
-getStorage.then(onGot, onError);
+getStorage.then(DBSDK_EXTENSION.onGot_getStorage, DBSDK_EXTENSION.onError_getStorage);
+
+var getPort = function() {
+    if (DBSDK_EXTENSION._port) return DBSDK_EXTENSION._port;
+    DBSDK_EXTENSION._port = browser.runtime.connect({name: "contextMenus"});
+    DBSDK_EXTENSION._port.onDisconnect.addListener(function() {
+        DBSDK_EXTENSION._port = null;
+    });
+    return DBSDK_EXTENSION._port;
+};
