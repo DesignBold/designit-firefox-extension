@@ -100,12 +100,6 @@ DBSDK_EXTENSION.init_hover_action = function(){
     var images = document.querySelectorAll("img");
     if (images.length > 0){
         for (var i=0;i < images.length;i++){
-            // items.minWidth = parseInt(items.minWidth);
-            // items.maxWidth = parseInt(items.maxWidth);
-            // items.minHeight = parseInt(items.minHeight);
-            // items.maxHeight = parseInt(items.maxHeight);
-            // items.hoverButtonStatus = parseInt(items.hoverButtonStatus);
-            // images[i].db_config = items;
             images[i].addEventListener("mouseover",DBSDK_EXTENSION.mouseover_function,false);
             images[i].addEventListener("mouseleave",DBSDK_EXTENSION.mouseleave_function,false);
         }
