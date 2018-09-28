@@ -63,7 +63,7 @@ iframe.style.left = 0;
 iframe.style.border = 0;
 iframe.width = '100%';
 iframe.height = '100%';
-iframe.src = browser.runtime.getURL("extension.html");
+iframe.src = browser.extension.getURL("extension.html");
 iframe.name = "designbold-extension-iframe";
 iframe.id = "designbold-extension-iframe";
 document.body.appendChild(iframe);
@@ -95,21 +95,21 @@ DBSDK_EXTENSION.openNewTab = function(url){
     console.log(url);
 }
 
-
 // When mouse hover image.
-DBSDK_EXTENSION.init_hover_action = function(items){
+DBSDK_EXTENSION.init_hover_action = function(){
     var images = document.querySelectorAll("img");
     if (images.length > 0){
         for (var i=0;i < images.length;i++){
-            items.minWidth = parseInt(items.minWidth);
-            items.maxWidth = parseInt(items.maxWidth);
-            items.minHeight = parseInt(items.minHeight);
-            items.maxHeight = parseInt(items.maxHeight);
-            items.hoverButtonStatus = parseInt(items.hoverButtonStatus);
-            images[i].db_config = items;
+            // items.minWidth = parseInt(items.minWidth);
+            // items.maxWidth = parseInt(items.maxWidth);
+            // items.minHeight = parseInt(items.minHeight);
+            // items.maxHeight = parseInt(items.maxHeight);
+            // items.hoverButtonStatus = parseInt(items.hoverButtonStatus);
+            // images[i].db_config = items;
             images[i].addEventListener("mouseover",DBSDK_EXTENSION.mouseover_function,false);
             images[i].addEventListener("mouseleave",DBSDK_EXTENSION.mouseleave_function,false);
         }
+
     }
 };
 
@@ -120,7 +120,8 @@ DBSDK_EXTENSION.mouseover_function = function(event){
     var image_src = el.src;
     var button = document.querySelector("#design_bold_hover_button");
     var scroll_top = document.documentElement.scrollTop;
-    var db_config = el.db_config;
+    var db_config = customeConfig;
+
     if (rect.width >= db_config.minWidth && rect.width <= db_config.maxWidth && rect.height >= db_config.minHeight && rect.height <= db_config.maxHeight){
         if (db_config.hoverButtonStatus){
             switch (db_config.hoverButtonPosition){
@@ -196,6 +197,13 @@ DBSDK_EXTENSION.start_design_tool = function(event){
     DfDocumentType.then(onGot, onError);
 };
 
+function windowOnload(){
+	DBSDK_EXTENSION.init_designbold_layer();
+	DBSDK_EXTENSION.init_hover_action();
+}
+
+var customeConfig = {};
+
 function onGot(items) {
     var domain = DBSDK_EXTENSION.domain;
     var domain_allow = 0;
@@ -250,11 +258,10 @@ function onGot(items) {
         }
     }
     if (DBSDK_EXTENSION.allow){
-        window.onload = function(){
-            DBSDK_EXTENSION.init_designbold_layer();
-            DBSDK_EXTENSION.init_hover_action(items);
-        }
+    	window.addEventListener("load", windowOnload());
     }
+
+    customeConfig = items;
 }
 
 function onError(error) {
