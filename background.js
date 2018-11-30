@@ -72,6 +72,7 @@ browser.runtime.onConnect.addListener(function(port) {
     // createProperties of chrome.contextMenus.create, except for onclick.
     // "onclick" should be a string which maps to a predefined function
     port.onMessage.addListener(function(data) {
+
         var action = data.action;
         if (action == 'create'){
             browser.menus.create({
@@ -82,6 +83,8 @@ browser.runtime.onConnect.addListener(function(port) {
         }
         else if (action == "remove"){
             removeContextMenus("designbold-context-menu");
+        }else{
+            console.log(data);
         }
 
         browser.menus.onClicked.addListener(function(info, tab) {
